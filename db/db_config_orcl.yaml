@@ -1,0 +1,6 @@
+username : 'jde2mif'
+password : 'mifac43210'
+host : '192.168.150.204'
+port : '1521'
+sid : 'orcl'
+schema : testdta
