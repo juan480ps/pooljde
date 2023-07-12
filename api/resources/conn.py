@@ -55,35 +55,35 @@ def require_token(func):
 class Conn(Resource):
     @require_api_key
     @require_token
-    def post(self):        
+    def post(self):
         logging.debug("Entro POST ")
         objetoJson = []
         arrayJson = []
-        try:     
+        try:
             logging.debug("HTTP REQUEST HEADERS: "+str(request.headers))
             logging.debug("HTTP REQUEST DATA: "+str(request.data))
-            data = request.get_json(force=True)            
-            logging.info('@REQUEST POST '+json.dumps(data))            
+            data = request.get_json(force=True)
+            logging.info('@REQUEST POST '+json.dumps(data))
             operation = data['operation']
             params = data['params']
-            query = params['query']            
+            query = params['query']
             cur = connpost.cursor()
-            cursor = db.pool.getCursorJDE()            
-            decoded_query = base64.b64decode(query).decode("utf-8")            
+            cursor = db.pool.getCursorJDE()
+            decoded_query = base64.b64decode(query).decode("utf-8")
             if operation.lower() == "select":
                 logging.debug(str(decoded_query))
                 cursor.execute(str(decoded_query))
                 rows = cursor.fetchall()
                 column_names = cursor.description
-                results = []                
+                results = []
                 for row in rows:
-                    row_dict = {}                    
+                    row_dict = {}
                     for i, column in enumerate(column_names):
                         column_name = column[0]
                         value = row[i]
                         value = str(value)
-                        row_dict[column_name] = value                        
-                    results.append(row_dict)                    
+                        row_dict[column_name] = value
+                    results.append(row_dict)
                 if results:
                     descripcion = 'OK'
                     codigo = 1000
@@ -91,7 +91,7 @@ class Conn(Resource):
                     arrayJson = results
                 else:
                     descripcion = 'No encontrado'
-                    codigo = -1001               
+                    codigo = -1001
             elif operation.lower() == "update" or operation.lower() == "delete" or operation.lower() == "insert":
                 cursor.execute(str(decoded_query))
                 rowcount = cursor.rowcount
@@ -113,10 +113,21 @@ class Conn(Resource):
         finally:
             cursor.connection.commit()
             cursor.close()
-        respuesta = {'codigo': codigo, 'descripcion': descripcion, 'objetoJson': objetoJson, 'arrayJson': arrayJson }        
-        query = f"INSERT INTO public.log (codigo, descripcion, objetojson, arrayjson) VALUES({codigo}, '{descripcion}', '{json.dumps(objetoJson)}', '{json.dumps(arrayJson)}'); "        
-        cur.execute(query)
-        connpost.commit()
-        cur.close()        
-        logging.info('@REQUEST GET ' + request.full_path + ' @RESPONSE ' + json.dumps(respuesta))        
+        try:
+            query = f"INSERT INTO testdta.log (codigo, descripcion, objetojson, arrayjson) VALUES({codigo}, '{descripcion}', '{json.dumps(objetoJson)}', '{json.dumps(arrayJson)}'); "
+            cur.execute(query)
+            connpost.commit()
+            cur.close()
+        except KeyError as e :
+            logging.debug(e)
+            logging.info("Peticion finalizada con error", exc_info=True)
+            descripcion = 'No se encuentra el parametro: ' + str(e)
+            codigo = -1001
+        except Exception as e:
+            descripcion = str(e)
+            codigo = -1000
+            connpost.rollback()
+        
+        respuesta = {'codigo': codigo, 'descripcion': descripcion, 'objetoJson': objetoJson, 'arrayJson': arrayJson }
+        logging.info('@REQUEST GET ' + request.full_path + ' @RESPONSE ' + json.dumps(respuesta))
         return respuesta
