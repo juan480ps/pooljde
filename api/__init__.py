@@ -29,3 +29,7 @@ api = Api(app)
 from api.resources.conn import Conn
 
 api.add_resource(Conn, '/api/jdedb')
+
+@app.route("/", methods = ['POST', 'GET'])
+def hello():
+    return "Pagina de prueba"
