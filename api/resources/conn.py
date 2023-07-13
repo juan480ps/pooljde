@@ -16,6 +16,7 @@ def require_api_key(func):
     @wraps(func)
     def decorated_function(*args, **kwargs):
         try:
+            logging.debug("Verificar Api-Key PoolJDE")
             data = request.get_json()
             params = data['params']
             api_key = params['apikey']
@@ -36,6 +37,7 @@ def require_token(func):
     @wraps(func)
     def decorated_function(*args, **kwargs):
         try:
+            logging.debug("Verificar Token PoolJDE")
             data = request.get_json()
             params = data['params']
             token = params['token']
@@ -56,14 +58,14 @@ class Conn(Resource):
     @require_api_key
     @require_token
     def post(self):
-        logging.debug("Entro POST ")
+        logging.debug("Entro POST PoolJDE")
         objetoJson = []
         arrayJson = []
         try:
-            logging.debug("HTTP REQUEST HEADERS: "+str(request.headers))
-            logging.debug("HTTP REQUEST DATA: "+str(request.data))
-            data = request.get_json(force=True)
-            logging.info('@REQUEST POST '+json.dumps(data))
+            logging.debug("HTTP REQUEST HEADERS: " + str(request.headers))
+            logging.debug("HTTP REQUEST DATA: " + str(request.data))
+            data = request.get_json(force = True)
+            logging.info('@REQUEST POST ' + json.dumps(data))
             operation = data['operation']
             params = data['params']
             query = params['query']
@@ -113,6 +115,7 @@ class Conn(Resource):
         finally:
             cursor.connection.commit()
             cursor.close()
+            
         try:
             query = f"INSERT INTO testdta.log (codigo, descripcion, objetojson, arrayjson) VALUES({codigo}, '{descripcion}', '{json.dumps(objetoJson)}', '{json.dumps(arrayJson)}'); "
             cur.execute(query)
