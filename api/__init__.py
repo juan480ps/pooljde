@@ -1,29 +1,16 @@
+import logging.config, yaml
 from flask import Flask
 from flask_restful import Api
 from logging.config import dictConfig
 
-dictConfig({
-    'version': 1,
-    'formatters': {'default': {
-        'format': 'pooljde %(levelname)s %(filename)s(%(lineno)d) %(funcName)s(): %(message)s',
-    }},
-    'handlers': {'wsgi': {
-        'class': 'logging.StreamHandler',
-        'stream': 'ext://flask.logging.wsgi_errors_stream',
-        'formatter': 'default'
-    }},
-    'root': {
-        'level': 'DEBUG',
-        'handlers': ['wsgi']
-    }
-})
+file = open('config/log/logging.yml', 'r')
+data = yaml.safe_load(file)
+file.close()
+logging.config.dictConfig(data)
 
 app = Flask(__name__)
-
 app.config.from_pyfile('config.py')
-
 api_key = app.config.get('API_KEY')
-
 api = Api(app)
 
 from api.resources.conn import Conn

@@ -1,6 +1,6 @@
 import cx_Oracle, logging, yaml
 
-config_file = 'db/db_config_orcl.yaml'
+config_file = 'config/db/db_config_orcl.yaml'
 file = open(config_file, 'r')
 config_data = file.read()
 file.close()

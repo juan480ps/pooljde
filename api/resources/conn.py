@@ -1,16 +1,11 @@
-import json, logging, db.pool, psycopg2, base64, api
+import json, logging, config.db.pool as db, psycopg2, base64, api
 from flask_restful import Resource
 from flask import request
-from db.db_config_pstgr import postgresqlConfig
+from config.db.db_config_pstgr import postgresqlConfig
 from functools import wraps
 
 logging.basicConfig(level = logging.DEBUG)
 connpost = psycopg2.connect(postgresqlConfig)
-
-class APIKeyManager:
-    @staticmethod
-    def validate_api_key(api_key):
-        return api_key == api.api_key
 
 def require_api_key(func):
     @wraps(func)
@@ -70,7 +65,7 @@ class Conn(Resource):
             params = data['params']
             query = params['query']
             cur = connpost.cursor()
-            cursor = db.pool.getCursorJDE()
+            cursor = db.getCursorJDE()
             decoded_query = base64.b64decode(query).decode("utf-8")
             if operation.lower() == "select":
                 logging.debug(str(decoded_query))
@@ -105,7 +100,7 @@ class Conn(Resource):
                 codigo = -1002
         except KeyError as e :
             logging.debug(e)
-            logging.info("Peticion finalizada con error", exc_info=True)
+            logging.error("Peticion finalizada con error; " + str(e), exc_info=True)
             descripcion = 'No se encuentra el parametro: ' + str(e)
             codigo = -1001
         except Exception as e:
@@ -123,7 +118,7 @@ class Conn(Resource):
             cur.close()
         except KeyError as e :
             logging.debug(e)
-            logging.info("Peticion finalizada con error", exc_info=True)
+            logging.error("Peticion finalizada con error; " + str(e), exc_info=True)
             descripcion = 'No se encuentra el parametro: ' + str(e)
             codigo = -1001
         except Exception as e:
