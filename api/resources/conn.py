@@ -54,7 +54,7 @@ class Conn(Resource):
     @require_token
     def post(self):
         logging.debug("Entro POST PoolJDE")
-        objetoJson = []
+        objetoJson = {}
         arrayJson = []
         try:
             logging.debug("HTTP REQUEST HEADERS: " + str(request.headers))
@@ -84,7 +84,7 @@ class Conn(Resource):
                 if results:
                     descripcion = 'OK'
                     codigo = 1000
-                    objetoJson = []
+                    objetoJson = {}
                     arrayJson = results
                 else:
                     descripcion = 'No encontrado'

@@ -1,7 +1,6 @@
 import logging.config, yaml
 from flask import Flask
 from flask_restful import Api
-from logging.config import dictConfig
 
 file = open('config/log/logging.yml', 'r')
 data = yaml.safe_load(file)

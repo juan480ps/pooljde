@@ -2,7 +2,7 @@ version: 1
 disable_existing_loggers: true
 formatters:
   default:
-    format: 'auth %(levelname)s %(asctime)s %(name)s %(filename)s(%(lineno)d) %(funcName)s(): %(message)s'
+    format: 'pool %(levelname)s %(asctime)s %(name)s %(filename)s(%(lineno)d) %(funcName)s(): %(message)s'
 handlers:
   console:
     class: logging.StreamHandler
@@ -12,7 +12,7 @@ handlers:
   file:
     class: logging.FileHandler
     level: INFO
-    filename: /var/log/jdewsring01/access.log
+    filename: /var/log/nginx/access.log
   info_file:
     class: logging.FileHandler
     level: INFO
@@ -25,3 +25,5 @@ loggers:
 root:
   level: INFO
   handlers: [console, file, info_file]
+
+
