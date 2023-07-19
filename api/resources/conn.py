@@ -11,7 +11,7 @@ def require_api_key(func):
     @wraps(func)
     def decorated_function(*args, **kwargs):
         try:
-            logging.debug("Verificar Api-Key PoolJDE")
+            logging.info("Verificar Api-Key PoolJDE")
             data = request.get_json()
             params = data['params']
             api_key = params['apikey']
@@ -32,7 +32,7 @@ def require_token(func):
     @wraps(func)
     def decorated_function(*args, **kwargs):
         try:
-            logging.debug("Verificar Token PoolJDE")
+            logging.info("Verificar Token PoolJDE")
             data = request.get_json()
             params = data['params']
             token = params['token']
@@ -41,10 +41,14 @@ def require_token(func):
         except KeyError as e :
             descripcion = 'No se encuentra el parametro: ' + str(e)
             codigo = -1001
+            logging.debug(e)
+            logging.error("Peticion finalizada con error; " + descripcion + " " + str(codigo), exc_info=True)
             return {'codigo': codigo, 'descripcion': descripcion, 'objetoJson': [], 'arrayJson' : {}}
         except Exception as e:
             descripcion = str(e)
             codigo = -1000
+            logging.debug(e)
+            logging.error("Peticion finalizada con error; " + descripcion + " " + str(codigo), exc_info=True)
             return {'codigo': codigo, 'descripcion': descripcion, 'objetoJson': [], 'arrayJson' : {}}
         return func(*args, **kwargs)
     return decorated_function
@@ -99,13 +103,15 @@ class Conn(Resource):
                 descripcion = 'Operación no válida'
                 codigo = -1002
         except KeyError as e :
-            logging.debug(e)
-            logging.error("Peticion finalizada con error; " + str(e), exc_info=True)
             descripcion = 'No se encuentra el parametro: ' + str(e)
             codigo = -1001
+            logging.debug(e)
+            logging.error("Peticion finalizada con error; " + descripcion + " " + str(codigo), exc_info=True)
         except Exception as e:
             descripcion = str(e)
             codigo = -1000
+            logging.debug(e)
+            logging.error("Peticion finalizada con error; " + descripcion + " " + str(codigo), exc_info=True)
             connpost.rollback()
         finally:
             cursor.connection.commit()
@@ -117,13 +123,15 @@ class Conn(Resource):
             connpost.commit()
             cur.close()
         except KeyError as e :
-            logging.debug(e)
-            logging.error("Peticion finalizada con error; " + str(e), exc_info=True)
             descripcion = 'No se encuentra el parametro: ' + str(e)
             codigo = -1001
+            logging.debug(e)
+            logging.error("Peticion finalizada con error; " + descripcion + " " + str(codigo), exc_info=True)
         except Exception as e:
             descripcion = str(e)
             codigo = -1000
+            logging.debug(e)
+            logging.error("Peticion finalizada con error; " + descripcion + " " + str(codigo), exc_info=True)
             connpost.rollback()
         
         respuesta = {'codigo': codigo, 'descripcion': descripcion, 'objetoJson': objetoJson, 'arrayJson': arrayJson }
