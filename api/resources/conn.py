@@ -1,10 +1,7 @@
-import json, logging, config.db.pool as db, psycopg2, base64, api
+import json, logging, config.db.pool as db, base64, api
 from flask_restful import Resource
 from flask import request
-from config.db.db_config_pstgr import postgresqlConfig
 from functools import wraps
-
-connpost = psycopg2.connect(postgresqlConfig)
 
 def require_api_key(func): #funcion para requerir de forma obligatoria la apikey
     @wraps(func)
@@ -67,16 +64,15 @@ class Conn(Resource):
             operation = data['operation'] # se obtiene la key operacion del json
             params = data['params'] # se obtiene la key params del json
             query = params['query'] # se obtiene la key query de params
-            cur = connpost.cursor() # se abre cursor postgres interno
             cursor = db.getCursorJDE() # # se abre cursor JDE
             decoded_query = base64.b64decode(query).decode("utf-8") # se decodifica el query recibido del json en base64
-            if operation.lower() == "select":
-                logging.debug(str(decoded_query))
-                cursor.execute(str(decoded_query))
-                rows = cursor.fetchall()
-                column_names = cursor.description
+            if operation.lower() == "select": # se valida la operacion a realizar
+                logging.debug(str(decoded_query))  #logging de prueba
+                cursor.execute(str(decoded_query)) #se ejecuta el query decodificado
+                rows = cursor.fetchall() # fetchall por si el resultado tenga mas de una fila
+                column_names = cursor.description # se obtiene el nombre de las columnas del query ejecutado
                 results = []
-                for row in rows:
+                for row in rows: # recorremos el resultado para devolver de forma dinamica un query independientemente de las columnas que tenga
                     row_dict = {}
                     for i, column in enumerate(column_names):
                         column_name = column[0]
@@ -84,7 +80,7 @@ class Conn(Resource):
                         value = str(value)
                         row_dict[column_name] = value
                     results.append(row_dict)
-                if results:
+                if results: # se valida si el select tuvo resultados
                     descripcion = 'OK'
                     codigo = 1000
                     objetoJson = {}
@@ -92,16 +88,16 @@ class Conn(Resource):
                 else:
                     descripcion = 'No encontrado'
                     codigo = -1001
-            elif operation.lower() == "update" or operation.lower() == "delete" or operation.lower() == "insert":
-                cursor.execute(str(decoded_query))
-                rowcount = cursor.rowcount
+            elif operation.lower() == "update" or operation.lower() == "delete" or operation.lower() == "insert": # se valida si el tipo de operacion es distinto a select
+                cursor.execute(str(decoded_query))  #se ejecuta el query decodificado
+                rowcount = cursor.rowcount # se obtiene la cantidad de filas afectadas
                 descripcion = 'OK'
                 codigo = 1000
                 objetoJson = [str(rowcount) + " Filas afectadas"]
             else:
                 descripcion = 'Operación no válida'
                 codigo = -1002
-        except KeyError as e :
+        except KeyError as e : 
             descripcion = 'No se encuentra el parametro: ' + str(e)
             codigo = -1001
             logging.debug(e)
@@ -111,28 +107,9 @@ class Conn(Resource):
             codigo = -1000
             logging.debug(e)
             logging.error("Peticion finalizada con error; " + descripcion + " " + str(codigo), exc_info=True)
-            connpost.rollback()
         finally:
-            cursor.connection.commit()
-            cursor.close()
-            
-        try:
-            query = f"INSERT INTO testdta.log (codigo, descripcion, objetojson, arrayjson) VALUES({codigo}, '{descripcion}', '{json.dumps(objetoJson)}', '{json.dumps(arrayJson)}'); "
-            cur.execute(query)
-            connpost.commit()
-            cur.close()
-        except KeyError as e :
-            descripcion = 'No se encuentra el parametro: ' + str(e)
-            codigo = -1001
-            logging.debug(e)
-            logging.error("Peticion finalizada con error; " + descripcion + " " + str(codigo), exc_info=True)
-        except Exception as e:
-            descripcion = str(e)
-            codigo = -1000
-            logging.debug(e)
-            logging.error("Peticion finalizada con error; " + descripcion + " " + str(codigo), exc_info=True)
-            connpost.rollback()
-        
+            cursor.connection.commit()# se hace commit de todas las operaciones
+            cursor.close()# se cierra el cursor
         respuesta = {'codigo': codigo, 'descripcion': descripcion, 'objetoJson': objetoJson, 'arrayJson': arrayJson }
         logging.info('@REQUEST GET ' + request.full_path + ' @RESPONSE ' + json.dumps(respuesta))
         return respuesta
