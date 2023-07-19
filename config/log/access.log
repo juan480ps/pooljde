@@ -1,0 +1,31 @@
+pooljde INFO 2023-07-19 13:24:37,677 root conn.py(13) decorated_function(): Verificar Api-Key PoolJDE
+pooljde INFO 2023-07-19 13:24:42,379 root conn.py(13) decorated_function(): Verificar Api-Key PoolJDE
+pooljde INFO 2023-07-19 13:24:43,437 root conn.py(13) decorated_function(): Verificar Api-Key PoolJDE
+pooljde INFO 2023-07-19 13:25:32,610 root conn.py(13) decorated_function(): Verificar Api-Key PoolJDE
+pooljde INFO 2023-07-19 13:27:50,827 root conn.py(13) decorated_function(): Verificar Api-Key PoolJDE
+pooljde INFO 2023-07-19 13:28:06,790 werkzeug _internal.py(187) _log(): [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+pooljde INFO 2023-07-19 13:28:06,791 werkzeug _internal.py(187) _log(): [33mPress CTRL+C to quit[0m
+pooljde INFO 2023-07-19 13:29:02,344 werkzeug _internal.py(187) _log(): [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+pooljde INFO 2023-07-19 13:29:02,344 werkzeug _internal.py(187) _log(): [33mPress CTRL+C to quit[0m
+pooljde INFO 2023-07-19 13:29:09,611 root conn.py(13) decorated_function(): Verificar Api-Key PoolJDE
+pooljde INFO 2023-07-19 13:29:09,613 root conn.py(34) decorated_function(): Verificar Token PoolJDE
+pooljde INFO 2023-07-19 13:29:09,614 root conn.py(66) post(): @REQUEST POST {"operation": "select", "params": {"apikey": "0c3ac2fa-f79a-4503-a0ea-f950dd0a5b66", "token": "vQw0TbWY5lie1p9cDKRqfjKhppt5ybF1ItAlGmVSy0EYXvobXth6TiKihWksaUPyPK6wnSMtncGsEImq", "query": "CiAgICAgICAgICAgICAgICAgICAgU0VMRUNUIHRyaW0oRUFFTUFMKSBlbWFpbAogICAgICAgICAgICAgICAgICAgIEZST00gdGVzdGR0YS5GMDEwMSwgdGVzdGR0YS5GMDExNTEKICAgICAgICAgICAgICAgICAgICBXSEVSRSBBQkFOOCA9IEVBQU44CiAgICAgICAgICAgICAgICAgICAgQU5EIEVBRVRQID0gJ0UnCiAgICAgICAgICAgICAgICAgICAgQU5EIHRyaW0oQUJUQVgpID0gJzgwMDE4MTgxLTYnCiAgICAgICAgICAgICAgICA="}}
+pooljde INFO 2023-07-19 13:29:09,629 root conn.py(137) post(): @REQUEST GET /api/jdedb? @RESPONSE {"codigo": 1000, "descripcion": "OK", "objetoJson": {}, "arrayJson": [{"EMAIL": "ALAMBRA@PLANET.PY"}]}
+pooljde INFO 2023-07-19 13:29:09,630 werkzeug _internal.py(187) _log(): 127.0.0.1 - - [19/Jul/2023 13:29:09] "POST /api/jdedb HTTP/1.1" 200 -
+pooljde INFO 2023-07-19 13:32:27,066 root conn.py(13) decorated_function(): Verificar Api-Key PoolJDE
+pooljde INFO 2023-07-19 13:32:27,066 root conn.py(34) decorated_function(): Verificar Token PoolJDE
+pooljde INFO 2023-07-19 13:32:27,066 root conn.py(66) post(): @REQUEST POST {"operation": "select", "params": {"apikey": "0c3ac2fa-f79a-4503-a0ea-f950dd0a5b66", "token": "LEEiKwcTifOsIbiqEehTsIm9lBnua8ou6cNoZph9r7jR3hTlLErJ5I1jLEItCxxzeKGY0dnZr7MlmomD", "query": "CiAgICAgICAgICAgICAgICAgICAgU0VMRUNUIHRyaW0oRUFFTUFMKSBlbWFpbAogICAgICAgICAgICAgICAgICAgIEZST00gdGVzdGR0YS5GMDEwMSwgdGVzdGR0YS5GMDExNTEKICAgICAgICAgICAgICAgICAgICBXSEVSRSBBQkFOOCA9IEVBQU44CiAgICAgICAgICAgICAgICAgICAgQU5EIEVBRVRQID0gJ0UnCiAgICAgICAgICAgICAgICAgICAgQU5EIHRyaW0oQUJUQVgpID0gJzgwMDE4MTgxLTYnCiAgICAgICAgICAgICAgICA="}}
+pooljde INFO 2023-07-19 13:32:27,075 root conn.py(137) post(): @REQUEST GET /api/jdedb? @RESPONSE {"codigo": 1000, "descripcion": "OK", "objetoJson": {}, "arrayJson": [{"EMAIL": "ALAMBRA@PLANET.PY"}]}
+pooljde INFO 2023-07-19 13:32:27,076 werkzeug _internal.py(187) _log(): 127.0.0.1 - - [19/Jul/2023 13:32:27] "POST /api/jdedb HTTP/1.1" 200 -
+pooljde INFO 2023-07-19 13:32:28,271 root conn.py(13) decorated_function(): Verificar Api-Key PoolJDE
+pooljde INFO 2023-07-19 13:32:28,271 root conn.py(34) decorated_function(): Verificar Token PoolJDE
+pooljde INFO 2023-07-19 13:32:28,271 root conn.py(66) post(): @REQUEST POST {"operation": "select", "params": {"apikey": "0c3ac2fa-f79a-4503-a0ea-f950dd0a5b66", "token": "LEEiKwcTifOsIbiqEehTsIm9lBnua8ou6cNoZph9r7jR3hTlLErJ5I1jLEItCxxzeKGY0dnZr7MlmomD", "query": "CiAgICAgICAgICAgICAgICAgICAgU0VMRUNUIHRyaW0oRUFFTUFMKSBlbWFpbAogICAgICAgICAgICAgICAgICAgIEZST00gdGVzdGR0YS5GMDEwMSwgdGVzdGR0YS5GMDExNTEKICAgICAgICAgICAgICAgICAgICBXSEVSRSBBQkFOOCA9IEVBQU44CiAgICAgICAgICAgICAgICAgICAgQU5EIEVBRVRQID0gJ0UnCiAgICAgICAgICAgICAgICAgICAgQU5EIHRyaW0oQUJUQVgpID0gJzgwMDE4MTgxLTYnCiAgICAgICAgICAgICAgICA="}}
+pooljde INFO 2023-07-19 13:32:28,276 root conn.py(137) post(): @REQUEST GET /api/jdedb? @RESPONSE {"codigo": 1000, "descripcion": "OK", "objetoJson": {}, "arrayJson": [{"EMAIL": "ALAMBRA@PLANET.PY"}]}
+pooljde INFO 2023-07-19 13:32:28,277 werkzeug _internal.py(187) _log(): 127.0.0.1 - - [19/Jul/2023 13:32:28] "POST /api/jdedb HTTP/1.1" 200 -
+pooljde INFO 2023-07-19 13:32:29,295 root conn.py(13) decorated_function(): Verificar Api-Key PoolJDE
+pooljde INFO 2023-07-19 13:32:29,296 root conn.py(34) decorated_function(): Verificar Token PoolJDE
+pooljde INFO 2023-07-19 13:32:29,296 root conn.py(66) post(): @REQUEST POST {"operation": "select", "params": {"apikey": "0c3ac2fa-f79a-4503-a0ea-f950dd0a5b66", "token": "LEEiKwcTifOsIbiqEehTsIm9lBnua8ou6cNoZph9r7jR3hTlLErJ5I1jLEItCxxzeKGY0dnZr7MlmomD", "query": "CiAgICAgICAgICAgICAgICAgICAgU0VMRUNUIHRyaW0oRUFFTUFMKSBlbWFpbAogICAgICAgICAgICAgICAgICAgIEZST00gdGVzdGR0YS5GMDEwMSwgdGVzdGR0YS5GMDExNTEKICAgICAgICAgICAgICAgICAgICBXSEVSRSBBQkFOOCA9IEVBQU44CiAgICAgICAgICAgICAgICAgICAgQU5EIEVBRVRQID0gJ0UnCiAgICAgICAgICAgICAgICAgICAgQU5EIHRyaW0oQUJUQVgpID0gJzgwMDE4MTgxLTYnCiAgICAgICAgICAgICAgICA="}}
+pooljde INFO 2023-07-19 13:32:29,301 root conn.py(137) post(): @REQUEST GET /api/jdedb? @RESPONSE {"codigo": 1000, "descripcion": "OK", "objetoJson": {}, "arrayJson": [{"EMAIL": "ALAMBRA@PLANET.PY"}]}
+pooljde INFO 2023-07-19 13:32:29,302 werkzeug _internal.py(187) _log(): 127.0.0.1 - - [19/Jul/2023 13:32:29] "POST /api/jdedb HTTP/1.1" 200 -

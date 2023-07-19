@@ -4,10 +4,9 @@ from flask import request
 from config.db.db_config_pstgr import postgresqlConfig
 from functools import wraps
 
-logging.basicConfig(level = logging.DEBUG)
 connpost = psycopg2.connect(postgresqlConfig)
 
-def require_api_key(func):
+def require_api_key(func): #funcion para requerir de forma obligatoria la apikey
     @wraps(func)
     def decorated_function(*args, **kwargs):
         try:
@@ -15,7 +14,7 @@ def require_api_key(func):
             data = request.get_json()
             params = data['params']
             api_key = params['apikey']
-            if not api_key or not api_key == api.api_key:
+            if not api_key or not api_key == api.API_KEY:
                 return {'codigo': -1005, 'descripcion': 'Api-Key requerida', 'objetoJson' : [], 'arrayJson': []}
         except KeyError as e :
             descripcion = 'No se encuentra el parametro: ' + str(e)
@@ -28,7 +27,7 @@ def require_api_key(func):
         return func(*args, **kwargs)
     return decorated_function
 
-def require_token(func):
+def require_token(func): #funcion para requerir de forma obligatoria el token
     @wraps(func)
     def decorated_function(*args, **kwargs):
         try:
@@ -54,23 +53,23 @@ def require_token(func):
     return decorated_function
 
 class Conn(Resource):
-    @require_api_key
-    @require_token
+    @require_api_key #requerimos la apikey
+    @require_token # requerimos el token
     def post(self):
         logging.debug("Entro POST PoolJDE")
         objetoJson = {}
         arrayJson = []
         try:
-            logging.debug("HTTP REQUEST HEADERS: " + str(request.headers))
-            logging.debug("HTTP REQUEST DATA: " + str(request.data))
-            data = request.get_json(force = True)
-            logging.info('@REQUEST POST ' + json.dumps(data))
-            operation = data['operation']
-            params = data['params']
-            query = params['query']
-            cur = connpost.cursor()
-            cursor = db.getCursorJDE()
-            decoded_query = base64.b64decode(query).decode("utf-8")
+            logging.debug("HTTP REQUEST HEADERS: " + str(request.headers)) #logging de prueba
+            logging.debug("HTTP REQUEST DATA: " + str(request.data)) #logging de prueba
+            data = request.get_json(force = True) # asignamos a una variable el json de la peticion
+            logging.info('@REQUEST POST ' + json.dumps(data)) #logging de prueba
+            operation = data['operation'] # se obtiene la key operacion del json
+            params = data['params'] # se obtiene la key params del json
+            query = params['query'] # se obtiene la key query de params
+            cur = connpost.cursor() # se abre cursor postgres interno
+            cursor = db.getCursorJDE() # # se abre cursor JDE
+            decoded_query = base64.b64decode(query).decode("utf-8") # se decodifica el query recibido del json en base64
             if operation.lower() == "select":
                 logging.debug(str(decoded_query))
                 cursor.execute(str(decoded_query))
