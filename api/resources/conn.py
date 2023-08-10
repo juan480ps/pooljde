@@ -113,3 +113,6 @@ class Conn(Resource):
         respuesta = {'codigo': codigo, 'descripcion': descripcion, 'objetoJson': objetoJson, 'arrayJson': arrayJson }
         logging.info('@REQUEST GET ' + request.full_path + ' @RESPONSE ' + json.dumps(respuesta))
         return respuesta
+    
+    #def get_schema():
+        
