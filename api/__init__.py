@@ -12,6 +12,8 @@ app_config_data = yaml.safe_load(app_config_file)
 app_config_file.close()
 
 API_KEY = app_config_data['API_KEY']
+DEFAULT_PAGE_SIZE = app_config_data['DEFAULT_PAGE_SIZE']
+DEFAULT_PAGE_NUMBER = app_config_data['DEFAULT_PAGE_NUMBER']
 
 app = Flask(__name__)
 api = Api(app)

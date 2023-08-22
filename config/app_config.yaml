@@ -1,2 +1,5 @@
 API_KEY : "0c3ac2fa-f79a-4503-a0ea-f950dd0a5b66"
-AMBIENTE_DB : "testdta"
+#AMBIENTE_DB : "testdta"
+
+DEFAULT_PAGE_SIZE : 1000
+DEFAULT_PAGE_NUMBER : 1
