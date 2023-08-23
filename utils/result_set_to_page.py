@@ -1,32 +1,25 @@
 import api
 
 class ArrayResultSetToPage:
-    def __init__(self, result_set, page_number = api.DEFAULT_PAGE_NUMBER, page_size = api.DEFAULT_PAGE_SIZE):
+    def __init__(self, result_set, has_more_pages, page_number = api.DEFAULT_PAGE_NUMBER, page_size = api.DEFAULT_PAGE_SIZE):
         self.result_set = result_set
         self.page_number = page_number
         self.page_size = page_size
         self.row_count = len(result_set)
         self.last_page = (self.row_count + self.page_size - 1) // self.page_size
-        self.has_more_pages = page_number < self.last_page
-        
-        self.rows = self._get_rows_for_page()
-    
-    def _get_rows_for_page(self):
-        start_index = (self.page_number - 1) * self.page_size
-        end_index = start_index + self.page_size
-        return self.result_set[start_index:end_index]
+        self.has_more_pages = has_more_pages
     
     def to_json(self):
         json_data = {
             'objetoJson' : {
-                #'row_count': self.row_count,
-                'page_size': self.page_size,
+                'page_size': self.row_count,
                 'page_number': self.page_number,
-                #'last_page': self.last_page,
                 'has_more_pages': self.has_more_pages
             },
             'arrayJson' : 
-                {'rows': self.rows}
+                {
+                    'rows': self.result_set
+                }
             
         }
         return json_data
@@ -41,6 +34,6 @@ class ArrayResultSetToPage:
                     ORDER BY 1
                     ) a 
             ) 
-        WHERE rnum BETWEEN (({page_number} - 1) * {page_size} + 1) AND ({page_number} * {page_size}) 
-        """
+        WHERE rnum BETWEEN (({page_number} - 1) * {page_size} + 1) AND ({page_number} * {page_size} + 1) 
+        """ # offset en oracle versiones menores a 12c
         return query

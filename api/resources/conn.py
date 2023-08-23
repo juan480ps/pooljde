@@ -64,46 +64,42 @@ class Conn(Resource):
             logging.info('@REQUEST POST ' + json.dumps(data)) #logging de prueba
             operation = data['operation'] # se obtiene la key operacion del json
             params = data['params'] # se obtiene la key params del json
-            query = params['query'] # se obtiene la key query de params
-            
+            query = params['query'] # se obtiene la key query de params            
             page_number = params.get('page_number') if params.get('page_number') is not None else api.DEFAULT_PAGE_NUMBER
-            page_size = params.get('page_size') if params.get('page_size') is not None else api.DEFAULT_PAGE_SIZE #al llamar el metodo get no es obligatorio enviar la key desde el ws por ende no da error si no tiene
-            
+            page_size = params.get('page_size') if params.get('page_size') is not None else api.DEFAULT_PAGE_SIZE #al llamar el metodo get no es obligatorio enviar la key desde el ws por ende no da error si no tiene            
             cursor = db.getCursorJDE() # # se abre cursor JDE
-            decoded_query = base64.b64decode(query).decode("utf-8") # se decodifica el query recibido del json en base64
-            
-            decoded_query = ArrayResultSetToPage.convert_query_to_page(decoded_query, page_number, page_size)
-            
+            decoded_query = base64.b64decode(query).decode("utf-8") # se decodifica el query recibido del json en base64            
+            decoded_query = ArrayResultSetToPage.convert_query_to_page(decoded_query, page_number, page_size)            
             if operation.lower() == "select": # se valida la operacion a realizar
                 logging.debug(str(decoded_query))  #logging de prueba
                 cursor.execute(str(decoded_query)) #se ejecuta el query decodificado
-                
-                
-                rows = cursor.fetchall() # fetchall por si el resultado tenga mas de una fila
-                
-                
-                
-                column_names = cursor.description # se obtiene el nombre de las columnas del query ejecutado
+                column_names = cursor.description
                 results = []
-                for row in rows: # recorremos el resultado para devolver de forma dinamica un query independientemente de las columnas que tenga
-                    row_dict = {}
+                fila = 1
+                while fila <= page_size:
+                    row = cursor.fetchone()
+                    fila = fila + 1
+                    if row is None:
+                        break
+                    row_dict = {}                    
                     for i, column in enumerate(column_names):
                         column_name = column[0]
                         value = row[i]
                         value = str(value)
                         row_dict[column_name] = value
-                    results.append(row_dict)
-                if results: # se valida si el select tuvo resultados     
-
-                    array_to_page = ArrayResultSetToPage(results, page_number, page_size)
-                    array_to_page = array_to_page.to_json()
-                    
+                    results.append(row_dict)                
+                row = cursor.fetchone() # vemos si despues de la pagina existe un registro
+                if row is None:
+                    has_more_pages = False
+                else:
+                    has_more_pages = True
+                if results: # se valida si el select tuvo resultados
+                    array_to_page = ArrayResultSetToPage(results, has_more_pages, page_number, page_size)
+                    array_to_page = array_to_page.to_json()                    
                     objetoJson = array_to_page['objetoJson']  
                     arrayJson = array_to_page.get('arrayJson')['rows']
-                        
                     descripcion = 'OK'
                     codigo = 1000
-                    
                 else:
                     descripcion = 'No encontrado'
                     codigo = -1001
