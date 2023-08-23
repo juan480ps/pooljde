@@ -6,7 +6,6 @@ class ArrayResultSetToPage:
         self.page_number = page_number
         self.page_size = page_size
         self.row_count = len(result_set)
-        self.last_page = (self.row_count + self.page_size - 1) // self.page_size
         self.has_more_pages = has_more_pages
     
     def to_json(self):
