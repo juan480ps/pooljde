@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación PoolJDE</title>
+</head>
+
+<body>
+    <h1>{{info.webapp}}</h1>
+    <ol type="1">
+        <li>/api/jdedb</li>
+        <ol type="a">
+            <li>Operation: "<b> "select" </b>"</li>
+            <ul>
+                <li><u>Formato envio:</u> <br>{
+                    "operation" : "select" o "update" o "delete" o "insert", 
+                    "params" : [
+                                    "parametro" : "parametros adicionales para la consulta"	
+                                ]
+                }</li>
+                <li><u>Formato respuesta:</u> <br>{ 
+                    "codigo": "1000", 
+                    "descripcion": "OK", 
+                    "objetoJson": {}, 
+                    "arrayJson": [] 
+                    }</li>
+                <li>
+                    <dl>
+                        <dt><u>Lista de errores:</u></dt>
+                        <br>
+                        <dd><u>Codigo</u>: -1001</dd>
+                        <dd><u>Descripcion</u>: No encontrado.</dd>
+                        <br>
+                        <dd><u>Codigo</u>: -1002</dd>
+                        <dd><u>Descripcion</u>: Operación no válida.</dd>
+                        <br>
+                        <dd><u>Codigo</u>: -1003</dd>
+                        <dd><u>Descripcion</u>: Key error o no se encuentra el parametro solicitado.</dd>
+                        <br>
+                        <dd><u>Codigo</u>: -1000</dd>
+                        <dd><u>Descripcion</u>: Excepciones en gral.</dd>
+                    </dl>
+                </li>
+            </ul>            
+        </ol>
+    </ol>    
+</body>
+
+</html>

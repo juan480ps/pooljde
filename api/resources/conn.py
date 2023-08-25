@@ -16,7 +16,7 @@ def require_api_key(func): #funcion para requerir de forma obligatoria la apikey
                 return {'codigo': -1005, 'descripcion': 'Api-Key requerida', 'objetoJson' : [], 'arrayJson': []}
         except KeyError as e :
             descripcion = 'No se encuentra el parametro: ' + str(e)
-            codigo = -1001
+            codigo = -1003
             return {'codigo': codigo, 'descripcion': descripcion, 'objetoJson': [], 'arrayJson' : {}}
         except Exception as e:
             descripcion = str(e)
@@ -37,7 +37,7 @@ def require_token(func): #funcion para requerir de forma obligatoria el token
                 return {'codigo': -1005, 'descripcion': 'Token requerido', 'objetoJson' : [], 'arrayJson': []}
         except KeyError as e :
             descripcion = 'No se encuentra el parametro: ' + str(e)
-            codigo = -1001
+            codigo = -1003
             logging.debug(e)
             logging.error("Peticion finalizada con error; " + descripcion + " " + str(codigo), exc_info=True)
             return {'codigo': codigo, 'descripcion': descripcion, 'objetoJson': [], 'arrayJson' : {}}
@@ -114,7 +114,7 @@ class Conn(Resource):
                 codigo = -1002
         except KeyError as e : 
             descripcion = 'No se encuentra el parametro: ' + str(e)
-            codigo = -1001
+            codigo = -1003
             logging.debug(e)
             logging.error("Peticion finalizada con error; " + descripcion + " " + str(codigo), exc_info=True)
         except Exception as e:
