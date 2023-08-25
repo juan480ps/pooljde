@@ -1,0 +1,319 @@
+Actualizar todos sus paquetes a sus últimas versiones disponibles.
+
+$ sudo apt-get update 
+$ sudo apt-get upgrade
+
+Instalar dependencias necesarias de flask y python
+
+$ sudo apt-get install python3 python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools
+
+Instalar el paquete del entorno virtual de Python mediante el siguiente comando:
+
+$ sudo apt-get install python3-venv
+
+Instalar Nginx Web Server
+
+$ sudo apt-get install nginx
+
+Iniciar y habilitar el servicio Nginx usando el siguiente comando:
+
+$ sudo systemctl start nginx
+$ sudo systemctl enable nginx
+
+Crear directorio del proyecto
+
+$ mkdir /opt/flask/pooljde
+$ cd /opt/flask/pooljde
+
+Dar permisos de escritorio al directorio del prodyecto
+
+$ sudo chown usuario:pass -R /opt/flask/
+
+Crear entorno virtual para instalar las librerias
+
+$ python3 -m venv venv
+
+Activar el entorno con el siguiente comando:
+
+$ source venv/bin/activate
+
+Instalar Gunicorn, Flask y otros componentes con el siguiente comando:
+
+$ pip install wheel gunicorn flask psycopg2-binary flask_restful flask_cors
+
+Crear una aplicación de Flask de ejemplo para el proyecto
+
+$ sudo nano /opt/flask/pooljde/flaskapp.py
+
+Agregar los siguientes códigos al archivo recién creado:
+
+from flask import Flask
+app = Flask(__name__)
+@app.route("/", methods = ['POST', 'GET'])
+def hello():
+    return "Pagina de prueba"
+if __name__ == "__main__":
+    app.run(host='10.0.2.11')
+
+Verificar la aplicación con el siguiente comando:
+
+$ cd /opt/flask/pooljde/
+$ python3 flaskapp.py
+
+Si todo está bien, debe obtener el siguiente resultado:
+
+ * Serving Flask app 'flaskapp' (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://69.28.84.227:5000/ (Press CTRL+C to quit)
+Presione CTRL+C para cerrar la aplicación.
+
+Crear un punto de entrada WSGI para Gunicorn
+
+$ sudo nano /opt/flask/pooljde/wsgi.py
+
+Agregar las siguientes líneas:
+
+from flaskapp import app
+if __name__ == "__main__":
+    app.run()
+
+Guardar y cerrar el archivo y luego verificar si Gunicorn puede servir la aplicación correctamente usando el siguiente comando:
+
+cd /opt/flask/pooljde/
+gunicorn --bind localhost:5000 wsgi:app
+
+Si todo está bien, debe obtener el siguiente resultado:
+
+[2021-12-23 10:37:15 +0000] [9352] [INFO] Starting gunicorn 20.1.0
+[2021-12-23 10:37:15 +0000] [9352] [INFO] Listening at: http://0.0.0.0:5000 (9352)
+[2021-12-23 10:37:15 +0000] [9352] [INFO] Using worker: sync
+[2021-12-23 10:37:15 +0000] [9354] [INFO] Booting worker with pid: 9354
+
+Desactivar el entorno virtual de Python con el siguiente comando:
+
+$ deactivate
+
+Crear un archivo de servicio systemd para la aplicación Flask
+
+$ sudo nano /etc/systemd/system/pooljde.service
+
+Agregar las siguientes líneas:
+
+[Unit]
+Description=Gunicorn instance to serve pooljde
+After=network.target
+
+[Service]
+User=administrador
+Group=www-data
+WorkingDirectory=/opt/flask/pooljde
+Environment="PATH=/opt/flask/pooljde/venv/bin"
+ExecStart=/opt/flask/pooljde/venv/bin/gunicorn --bind localhost:5000 wsgi:app
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+
+Guardar y cerrar el archivo y, a continuación, establezca la propiedad y el permiso adecuados para el proyecto:
+
+$ sudo chown -R root:www-data /opt/flask/pooljde
+$ sudo chmod -R 775 /opt/flask/pooljde
+
+A continuación, vuelva a cargar el servicio systemd con el siguiente comando:
+
+$ sudo systemctl daemon-reload
+
+$ sudo systemctl start pooljde
+
+$ sudo systemctl enable pooljde
+
+Verificar estado de flask:
+
+$ sudo systemctl status pooljde
+
+Configurar Nginx como un proxy inverso para la aplicación Flask
+
+$ sudo nano /etc/nginx/conf.d/flask.conf
+
+Agregar las siguientes líneas:
+
+server {
+    listen 5001;
+    server_name http://localhost;
+    location / {
+        include proxy_params;
+        proxy_pass  http://localhost:5001;
+    }
+}
+
+Guardar y cerrar el archivo y luego verificar el Nginx para detectar cualquier error de sintaxis:
+
+$ sudo nginx -t
+
+Finalmente, reiniciar el servicio Nginx para aplicar los cambios:
+
+
+$ sudo service nginx restart
+
+Abre el archivo de configuración de Nginx para el sitio en cuestión. Por lo general, se encuentra en el directorio /etc/nginx/sites-available/. Puedes utilizar el editor de texto de tu preferencia, por ejemplo:
+
+
+sudo nano /etc/nginx/sites-available/flask
+
+Dentro del archivo de configuración, encuentra el bloque server existente o crea uno nuevo si no existe. Dentro de este bloque, establece el server_name y el listen para el puerto 80. Asegúrate de que se vea así:
+
+server {
+    listen 5001;
+    server_name http://localhost;
+    location / {
+        include proxy_params;
+        proxy_pass  http://localhost:5001;
+    }
+}
+
+Nota: Si ya existe un bloque server con otro server_name, puedes actualizarlo con el nuevo valor o agregar un nuevo bloque server específicamente para "flask.automovilsupply.com.py".
+
+Guarda los cambios y cierra el archivo.
+
+Crea un enlace simbólico desde el archivo de configuración en el directorio /etc/nginx/sites-available/ al directorio /etc/nginx/sites-enabled/. Esto se hace para habilitar el sitio. Puedes usar el siguiente comando:
+
+$ sudo unlink /etc/nginx/sites-enabled/flask
+
+$ sudo ln -s /etc/nginx/sites-available/pooljde /etc/nginx/sites-enabled/
+
+Reinicia el servicio de Nginx para que los cambios surtan efecto:
+
+sudo service nginx restart
+
+CONFIGURACION DEL INSTANT CLIENT DE ORACLE
+------------------------------------------
+Se deben bajar los archivos del sitio de oracle:
+instantclient-basiclite-linux.x64-18.5.0.0.0dbru.zip wget https://download.oracle.com/otn_software/linux/instantclient/1919000/instantclient-basiclite-linux.x64-19.19.0.0.0dbru.zip
+instantclient-sdk-linux.x64-18.5.0.0.0dbru.zip wget https://download.oracle.com/otn_software/linux/instantclient/1919000/instantclient-sdk-linux.x64-19.19.0.0.0dbru.zip
+Se deben descompactar como root en el directorio /opt segun se muestra a continuacion:
+mkdir /opt/oracle
+cd /opt/oracle
+unzip /directorio-origen/instantclient-basiclite-linux.x64-18.5.0.0.0dbru.zip
+unzip /directorio-origen/instantclient-sdk-linux.x64-18.5.0.0.0dbru.zip
+Se deben configurar los permisos del directorio para que lo puedan ver el usuario administrador
+que ejecuta el migrador:
+sudo chown administrador:administrador /opt/oracle -R
+CONFIGURACION DE LIBRERIAS DEL SISTEMA OPERATIVO
+------------------------------------------------
+Se debe editar el archivo /etc/ld.so.conf.d/oracleinstantclient.conf  y agregar la siguiente linea:
+/opt/oracle/instantclient_19_19
+CREACION DE VIRTUALENV
+----------------------
+Para la creación del virtualenv se utilizará el módulo venv de python3:
+python3 -m venv venv
+Esto se hara dentro del directorio de la aplicacion. Se debe activar de la siguiente manera:
+source venv/bin/activate
+
+A partir ahora, los comando se ejecutaran en el virtualenv. Se actualiza el pip del virtualenv:
+
+python -m pip install --upgrade pip
+
+INSTALAR LIBRERIAS PYTHON PARA EL VIRTUALENV
+--------------------------------------------
+Como una de las librerias es cx_Oracle, la misma necesita información de algunas variables de entorno
+para compilarse correctamente. A continuación los comandos export que deben ejecutarse para el
+cliente de oracle:
+
+export ORACLE_HOME=/opt/oracle/instantclient_19_19
+export LD_RUN_PATH=/opt/oracle/instantclient_19_19
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/oracle/instantclient_19_19
+
+Una vez configuradas las variables de entorno se instalan las librerias para el virtualenv especificadas en el archivo requirements.txt:
+
+python -m pip install -r requirements.txt
+
+A continuación ya se puede ejecutar la aplicación.
+
+python app.py [argumento]
+donde 'argumento' es el programa a ejecutar. En este caso trf para transformar y loa para cargar al jde los mensajes
+
+
+sudo su
+mkdir -p /opt/oracle
+cd /opt/oracle
+wget https://download.oracle.com/otn_software/linux/instantclient/19800/instantclient-basic-linux.x64-19.8.0.0.0dbru.zip
+unzip instantclient-basic-linux.x64-19.8.0.0.0dbru.zip
+apt install libaio1
+echo /opt/oracle/instantclient_19_8 > /etc/ld.so.conf.d/oracle-instantclient.conf
+ldconfig
+pip install cx_Oracle
+exit
+
+
+
+configurar instant client oracle
+
+export ORACLE_HOME=/opt/oracle/instantclient_19_19
+export LD_RUN_PATH=/opt/oracle/instantclient_19_19
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/oracle/instantclient_19_19
+
+
+
+agregar los export a este archivo
+
+export LD_LIBRARY_PATH=/opt/oracle/instantclient_19_19
+export ORACLE_HOME=/opt/oracle/instantclient_19_19
+
+nano ~/.bashrc
+
+export LD_LIBRARY_PATH=/opt/oracle/instantclient_19_19:$LD_LIBRARY_PATH
+export ORACLE_HOME=/opt/oracle/instantclient_19_19
+
+
+
+instalacion del postgres
+sudo apt install wget ca-certificates
+
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
+
+sudo apt update
+
+sudo apt install postgresql postgresql-contrib
+
+sudo -u postgres psql
+
+\password postgres
+
+CREATE DATABASE cliente;
+
+\c cliente
+
+CREATE TABLE public.contribuyente (
+id bigserial NOT NULL, categoria varchar NULL, dv varchar NULL, estado varchar NULL, mescierre varchar NULL, razonsocial varchar NULL, ruc varchar NULL, CONSTRAINT contribuyente_pk PRIMARY KEY (id)
+);
+
+CREATE TABLE public.log (
+    column1 jsonb NULL
+);
+
+CREATE TABLE public.usuario (
+    id bigserial NOT NULL,
+    username varchar NOT NULL,
+    "password" varchar NOT NULL,
+    canlogin bool NOT NULL DEFAULT true
+);
+
+
+
+sudo service nginx restart
+sudo systemctl stop nginx
+sudo systemctl stop pooljde
+
+sudo systemctl status nginx
+sudo systemctl status flask
+
+sudo systemctl restart pooljde
